@@ -1,4 +1,5 @@
 use import="FileOperations"
+use import="EnvironmentOperations"
 
 default BASE_DIR='${Directory.GetCurrentDirectory()}'
 default TARGET_DIR='${Path.Combine(BASE_DIR, "artifacts")}'
@@ -27,7 +28,7 @@ default TEST_DIR='${Path.Combine(BASE_DIR, "test")}'
     
 #pack .build
     log info="--- Creating NuGet packages ---"
-    dotnet-pack buildDir="${SOURCE_DIR}"
+    dotnet-pack buildDir="${SOURCE_DIR}" versionSuffix="${Env("OKRA_BUILD_VERSIONSUFFIX")}"
 
 #test .build
     log info="--- Running unit tests ---"

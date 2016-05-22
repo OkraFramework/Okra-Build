@@ -1,4 +1,5 @@
 default outDir = "artifacts"
+default versionSuffix = ""
 
 @{
     var path = Path.Combine(buildDir, "*/project.json");
@@ -6,6 +7,10 @@ default outDir = "artifacts"
     foreach (var projectFile in Files.Include(path))
     {
         var args = string.Format("pack {0} --output {1}", projectFile, outDir);
+        
+        if (!string.IsNullOrEmpty(versionSuffix))
+            args += string.Format(" --version-suffix {0}", versionSuffix);
+        
         Dotnet(args);
     }
 }
