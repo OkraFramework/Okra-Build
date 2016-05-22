@@ -1,0 +1,34 @@
+use import="FileOperations"
+
+default BASE_DIR='${Directory.GetCurrentDirectory()}'
+default TARGET_DIR='${Path.Combine(BASE_DIR, "artifacts")}'
+default SOURCE_DIR='${Path.Combine(BASE_DIR, "src")}'
+default TEST_DIR='${Path.Combine(BASE_DIR, "test")}'
+
+#default .build .test .pack
+    
+#clean
+    log info="--- Cleaning ---"
+    @{
+        DeleteDirectory(TARGET_DIR);
+        DeleteDirectoriesRecursive(SOURCE_DIR, "bin");
+        DeleteDirectoriesRecursive(SOURCE_DIR, "obj");
+    }
+    
+#restore
+    log info="--- Restoring Packages ---"
+    dotnet-restore restoreDir="${SOURCE_DIR}"
+    dotnet-restore restoreDir="${TEST_DIR}"
+    
+#build .clean .restore
+    log info="--- Building ---"
+    dotnet-build buildDir="${SOURCE_DIR}"
+    dotnet-build buildDir="${TEST_DIR}"
+    
+#pack .build
+    log info="--- Creating NuGet packages ---"
+    dotnet-pack buildDir="${SOURCE_DIR}"
+
+#test .build
+    log info="--- Running unit tests ---"
+    dotnet-test testDir="${TEST_DIR}"

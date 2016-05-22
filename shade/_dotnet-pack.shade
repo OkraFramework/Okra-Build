@@ -1,0 +1,11 @@
+default outDir = "artifacts"
+
+@{
+    var path = Path.Combine(buildDir, "*/project.json");
+    
+    foreach (var projectFile in Files.Include(path))
+    {
+        var args = string.Format("pack {0} --output {1}", projectFile, outDir);
+        Dotnet(args);
+    }
+}

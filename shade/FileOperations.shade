@@ -1,0 +1,27 @@
+use namespace="System.Collections.Generic"
+use namespace="System.IO"
+use import="Files"
+
+functions @{
+    void DeleteDirectory(string path)
+    {
+        if (Directory.Exists(path))
+        {
+            Log.Info("Deleting directory: " + path);
+            Directory.Delete(path, true);
+        }
+    }
+    
+    void DeleteDirectoriesRecursive(string path, string searchPattern)
+    {
+        foreach (string dirPath in GetDirectoriesContaining(path, searchPattern))
+        {
+            DeleteDirectory(dirPath);
+        }
+    }
+    
+    IEnumerable<string> GetDirectoriesContaining(string path, string searchPattern)
+    {
+        return Directory.GetDirectories(path, searchPattern, SearchOption.AllDirectories);
+    }
+}

@@ -1,0 +1,9 @@
+@{
+    var path = Path.Combine(buildDir, "*/project.json");
+    
+    foreach (var projectFile in Files.Include(path))
+    {
+        var args = string.Format("build {0}", projectFile);
+        Dotnet(args);
+    }
+}
