@@ -13,3 +13,8 @@ If (!(Test-Path ".\packages\Sake.0.2.2"))
 # Run build steps
 
 .\packages\Sake.0.2.2\tools\Sake.exe -I .build\shade -f .build\shade\makefile.shade @args
+
+If ($LastExitCode)
+{
+    throw("Sake build process failed")
+}
