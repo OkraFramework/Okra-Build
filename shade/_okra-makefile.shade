@@ -7,7 +7,7 @@ default SOURCE_DIR='${Path.Combine(BASE_DIR, "src")}'
 default TEST_DIR='${Path.Combine(BASE_DIR, "test")}'
 
 #default .build .test .pack
-    
+
 #clean
     log info="--- Cleaning ---"
     @{
@@ -16,20 +16,20 @@ default TEST_DIR='${Path.Combine(BASE_DIR, "test")}'
         DeleteDirectoriesRecursive(SOURCE_DIR, "obj");
     }
     
-#restore
-    log info="--- Restoring Packages ---"
+#build .clean
+    log info="--- Building source ---"
     dotnet-restore restoreDir="${SOURCE_DIR}"
-    dotnet-restore restoreDir="${TEST_DIR}"
-    
-#build .clean .restore
-    log info="--- Building ---"
     dotnet-build buildDir="${SOURCE_DIR}"
+    
+#build-test .clean .build
+    log info="--- Building unit tests ---"
+    dotnet-restore restoreDir="${TEST_DIR}"
     dotnet-build buildDir="${TEST_DIR}"
     
 #pack .build
     log info="--- Creating NuGet packages ---"
     dotnet-pack buildDir="${SOURCE_DIR}" versionSuffix="${Env("OKRA_BUILD_VERSIONSUFFIX")}"
 
-#test .build
+#test .build-test
     log info="--- Running unit tests ---"
     dotnet-test testDir="${TEST_DIR}"
