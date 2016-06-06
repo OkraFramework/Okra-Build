@@ -25,17 +25,25 @@ ForEach ($project in $projects)
     
     $projectDirectory = Join-Path ".." $project
     $buildFile = Join-Path $projectDirectory "build.ps1"
+    $buildArguments = $buildFile + " " + $args
     $sourceArtifacts = Join-Path $projectDirectory "artifacts\*"
     $logFile = Join-Path $logFiles ($project + ".log")
     
     If (Test-Path $buildFile)
     {
-        $process = Start-Process Powershell -Argument $buildFile -Wait -NoNewWindow -RedirectStandardOutput $logFile -PassThru
+        $process = Start-Process Powershell -Argument $buildArguments -Wait -NoNewWindow -RedirectStandardOutput $logFile -PassThru
         
         If (!$process.ExitCode)
         {
-            Copy-Item $sourceArtifacts $destinationArtifacts
-            Write-Host " : success" -ForegroundColor Green
+            If (Test-Path $sourceArtifacts)
+            {
+                Copy-Item $sourceArtifacts $destinationArtifacts
+                Write-Host " : success" -ForegroundColor Green
+            }
+            else
+            {
+                Write-Host " : no artifacts" -ForegroundColor Red
+            }
         }
         Else
         {
