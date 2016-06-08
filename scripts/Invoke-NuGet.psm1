@@ -5,7 +5,10 @@ function Install-NuGet
         New-Item .\.nuget -type directory -Force | Out-Null
         Invoke-WebRequest 'http://dist.nuget.org/win-x86-commandline/v3.1.0-beta/nuget.exe' -OutFile '.\.nuget\nuget.exe'
     }
+}
 
+function Update-NuGet
+{
     .\.nuget\NuGet.exe update -self
 }
 
