@@ -1,6 +1,0 @@
-functions @{
-    string Env(string key)
-    {
-        return Environment.GetEnvironmentVariable(key);
-    }
-}

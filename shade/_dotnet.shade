@@ -1,6 +1,0 @@
-default dotnetDir = '${Directory.GetCurrentDirectory()}'
-
-exec program='dotnet' commandline='${command}' workingdir='${dotnetDir}'
-
-macro name='Dotnet' command='string'
-    dotnet
