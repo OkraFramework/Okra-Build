@@ -3,6 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 var target = Argument("target", "Default");
+var configuration = Argument("configuration", "Release");
 var rootDirectory = Argument("rootDirectory", ".");
 var versionSuffix = Argument("versionSuffix", "");
 var useMSBuild = Argument("useMSBuild", false);
@@ -39,8 +40,13 @@ Task("Build-DotNetCore")
     .IsDependentOn("Clean")
     .Does(() =>
     {
+        var settings = new DotNetCoreBuildSettings()
+        {
+            Configuration = configuration
+        };
+
         DotNetCoreRestore("\"" + srcDirectory.ToString() + "\"");
-        srcFiles.ForEach(p => DotNetCoreBuild("\"" + p + "\""));
+        srcFiles.ForEach(p => DotNetCoreBuild("\"" + p + "\"", settings));
     });
 
 Task("Build-MSBuild")
@@ -48,8 +54,13 @@ Task("Build-MSBuild")
     .IsDependentOn("Clean")
     .Does(() =>
     {
+        var settings = new MSBuildSettings()
+        {
+            Configuration = configuration
+        };
+        
         NuGetRestore(srcFiles);
-        csprojFiles.ForEach(p => MSBuild(p));
+        csprojFiles.ForEach(p => MSBuild(p, settings));
     });
 
 Task("BuildTests-DotNetCore")
@@ -78,13 +89,14 @@ Task("Pack-DotNetCore")
         var packSettings = new DotNetCorePackSettings()
             {
                 OutputDirectory = artifactsDirectory,
-                VersionSuffix = versionSuffix
+                VersionSuffix = versionSuffix,
+                Configuration = configuration
             };
         
         srcFiles.ForEach(p => DotNetCorePack("\"" + p + "\"", packSettings));
     });
 
-Task("Pack-MsBuild")
+Task("Pack-MSBuild")
     .WithCriteria(useMSBuild)
     .IsDependentOn("Build")
     .Does(() =>
@@ -92,10 +104,11 @@ Task("Pack-MsBuild")
         var packSettings = new NuGetPackSettings()
             {
                 OutputDirectory = artifactsDirectory,
-                Version = "2.0.0" + versionSuffix
+                Version = "2.0.0" + versionSuffix,
+                Symbols = true
             };
         
-        srcFiles.ForEach(p => NuGetPack(p, packSettings));
+        nuspecFiles.ForEach(p => NuGetPack(p, packSettings));
     });
 
 //////////////////////////////////////////////////////////////////////
