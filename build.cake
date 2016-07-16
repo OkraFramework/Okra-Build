@@ -104,7 +104,7 @@ Task("Pack-MSBuild")
         var packSettings = new NuGetPackSettings()
             {
                 OutputDirectory = artifactsDirectory,
-                Version = "2.0.0" + versionSuffix,
+                Version = "2.0.0" + "-" + versionSuffix,
                 Symbols = true
             };
         
