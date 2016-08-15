@@ -4,7 +4,8 @@ $projects = "MEFExtensions.DependencyInjection",
             "Okra.Core",
             "Okra.DependencyInjection.MEF",
             "Okra.Platform.UniversalWindows",
-            "Okra.Platform.XamarinForms"
+            "Okra.Platform.XamarinForms",
+            "Okra.UI.NavMenu"
             
 $destinationArtifacts = ".\artifacts"
 $logFiles = ".\logs"
