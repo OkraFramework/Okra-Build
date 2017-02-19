@@ -14,12 +14,10 @@ DirectoryPath artifactsDirectory = baseDirectory.Combine("artifacts");
 DirectoryPath srcDirectory = baseDirectory.Combine("src");
 DirectoryPath testDirectory = baseDirectory.Combine("test");
 
-List<FilePath> srcFiles = GetFiles(srcDirectory + "/**/project.json").ToList();
-List<FilePath> csprojFiles = GetFiles(srcDirectory + "/**/*.csproj").ToList();
+List<FilePath> srcFiles = GetFiles(srcDirectory + "/**/*.csproj").ToList();
 List<FilePath> nuspecFiles = GetFiles(srcDirectory + "/**/*.nuspec").ToList();
 
-List<FilePath> testFiles = GetFiles(testDirectory + "/**/project.json").ToList();
-List<FilePath> testCsprojFiles = GetFiles(testDirectory + "/**/*.csproj").ToList();
+List<FilePath> testFiles = GetFiles(testDirectory + "/**/*.csproj").ToList();
 
 //////////////////////////////////////////////////////////////////////
 // TASKS
@@ -45,7 +43,7 @@ Task("Build-DotNetCore")
             Configuration = configuration
         };
 
-        DotNetCoreRestore("\"" + srcDirectory.ToString() + "\"");
+        srcFiles.ForEach(p => DotNetCoreRestore("\"" + p + "\""));
         srcFiles.ForEach(p => DotNetCoreBuild("\"" + p + "\"", settings));
     });
 
@@ -60,7 +58,7 @@ Task("Build-MSBuild")
         };
         
         NuGetRestore(srcFiles);
-        csprojFiles.ForEach(p => MSBuild(p, settings));
+        srcFiles.ForEach(p => MSBuild(p, settings));
     });
 
 Task("BuildTests-DotNetCore")
@@ -69,7 +67,7 @@ Task("BuildTests-DotNetCore")
     .IsDependentOn("Build")
     .Does(() =>
     {
-        DotNetCoreRestore("\"" + testDirectory.ToString() + "\"");
+        testFiles.ForEach(p => DotNetCoreRestore("\"" + p + "\""));
         testFiles.ForEach(p => DotNetCoreBuild("\"" + p + "\""));
     });
 
